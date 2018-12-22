@@ -7,7 +7,6 @@ A simple annotation that generates a "Router" class for providing a consistent w
 
 
 
-**Here are some project specific terms:**
 
 ### Advantages
 - Just add an annotation of [Routeable](https://github.com/talhahasanzia/router-annotations/blob/master/annotation/src/main/java/com/talhahasanzia/annotation/Routeable.java) to your Activity class to get started.
