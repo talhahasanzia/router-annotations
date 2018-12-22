@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">router-annotations</string>
+    <string name="test_simple_route">Test Simple Route</string>
+    <string name="test_route_with_string_extra">Test Route With String Extra</string>
+    <string name="test_route_with_bundle_extra">Test Route With Bundle Extra</string>
+    <string name="test_route_with_serializable_extra">Test Route With Serializable Extra</string>
+    <string name="test_route_with_parcelable_extra">Test Route With Parcelable Extra</string>
+    <string name="should_finish_current_activity">Should finish current activity?</string>
+    <string name="sample_data_to_be_passed_in_second_activity">Sample data to be passed in second Activity</string>
 </resources>

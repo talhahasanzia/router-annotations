@@ -1,18 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <TextView
+    <Button
+        android:id="@+id/simpleRoute"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:onClick="onClick"
+        android:text="@string/test_simple_route" />
+
+
+    <Button
+        android:id="@+id/stringRoute"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:onClick="onClick"
+        android:text="@string/test_route_with_string_extra" />
+
+
+    <Button
+        android:id="@+id/bundleRoute"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:onClick="onClick"
+        android:text="@string/test_route_with_bundle_extra" />
+
+
+    <Button
+        android:id="@+id/serializableRoute"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:onClick="onClick"
+        android:text="@string/test_route_with_serializable_extra" />
+
+
+    <Button
+        android:id="@+id/parcelableRoute"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:onClick="onClick"
+        android:text="@string/test_route_with_parcelable_extra" />
+
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/finishCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="MainActivity"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="@string/should_finish_current_activity" />
 
-</android.support.constraint.ConstraintLayout>
+    <EditText
+        android:id="@+id/dataEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:hint="@string/sample_data_to_be_passed_in_second_activity" />
+
+
+</LinearLayout>

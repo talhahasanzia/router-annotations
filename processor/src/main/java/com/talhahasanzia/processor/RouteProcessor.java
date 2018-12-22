@@ -32,14 +32,23 @@ import javax.tools.Diagnostic;
 @SupportedAnnotationTypes("com.talhahasanzia.annotation.Routeable")
 public class RouteProcessor extends AbstractProcessor {
 
-    private static final String METHOD_PREFIX = "start";
+    // method name that will be generated
+    private static final String METHOD_PREFIX = "route";
+    // Intent class specification
     private static final ClassName classIntent = ClassName.get("android.content", "Intent");
+    // Context class specification
     private static final ClassName classContext = ClassName.get("android.content", "Context");
+    // Activity class specification
     private static final ClassName classActivity = ClassName.get("android.app", "Activity");
+    // Bundle class specification
     private static final ClassName classBundle = ClassName.get("android.os", "Bundle");
+    // Parcelable class specification
     private static final ClassName classParcelable = ClassName.get("android.os", "Parcelable");
+    // Serializable class specification
     private static final ClassName classSerializable = ClassName.get("java.io", "Serializable");
 
+
+    // some objects that we get in "init" method, we use some and leave others for later implementations
     private ProcessingEnvironment processingEnvironment;
     private Messager messager;
     private Types typeUtils;
@@ -47,6 +56,7 @@ public class RouteProcessor extends AbstractProcessor {
     private Filer filer;
     private Map<String, String> activitiesWithPackage;
 
+    // init implementation, runs 1st time the processor starts
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         this.processingEnvironment = processingEnv;
@@ -59,23 +69,28 @@ public class RouteProcessor extends AbstractProcessor {
 
     }
 
+    // runs when processor is called by compiler
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
 
+        // get each element that was annotated with "Routeable class, and do the following
         for (Element element : roundEnvironment.getElementsAnnotatedWith(Routeable.class)) {
 
+            // only support annotation on class types
             if (element.getKind() != ElementKind.CLASS) {
                 messager.printMessage(Diagnostic.Kind.ERROR, "Can be only applied to class.");
             }
 
+            // get element type
             TypeElement typeElement = (TypeElement) element;
+            // get package
             PackageElement pkg = elementUtils.getPackageOf(element);
 
-
+            // generate a class
             TypeSpec.Builder generatedClass = generateClass(element, typeElement.getSimpleName().toString(),
                     pkg.getQualifiedName().toString());
 
-
+            // write a .java class using filer
             try {
                 JavaFile.builder(pkg.getQualifiedName().toString(), generatedClass.build()).build().writeTo(filer);
             } catch (IOException e) {
@@ -89,46 +104,48 @@ public class RouteProcessor extends AbstractProcessor {
         return true;
     }
 
-
+    // Generates Router classes for annotated types, using JavaPoet
     private TypeSpec.Builder generateClass(Element element, String activityName, String packageName) {
 
-
+        // Class specification
         TypeSpec.Builder generatedClass = TypeSpec
                 .classBuilder(activityName + "Router")
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL);
 
-
+        // The class on which the annotation was used, here we expect it to be "Activity" class
         ClassName activityClass = ClassName.get(packageName, activityName);
 
+        // add following method definitions to generated class
+        generatedClass.addMethod(getContextMethod(activityClass));
+        generatedClass.addMethod(getContextFinishMethod(activityClass));
+        generatedClass.addMethod(getContextBundleMethod(activityClass));
+        generatedClass.addMethod(getContextBundleFinishMethod(activityClass));
+        generatedClass.addMethod(getContextStringExtraMethod(activityClass));
+        generatedClass.addMethod(getContextStringExtraFinishMethod(activityClass));
+        generatedClass.addMethod(getContextSerializableExtraMethod(activityClass));
+        generatedClass.addMethod(getContextSerializableExtraFinishMethod(activityClass));
+        generatedClass.addMethod(getContextParcelableExtraMethod(activityClass));
+        generatedClass.addMethod(getContextParcelableExtraFinishMethod(activityClass));
 
-        generatedClass.addMethod(getContextMethod(activityName, activityClass));
-        generatedClass.addMethod(getContextFinishMethod(activityName, activityClass));
-        generatedClass.addMethod(getContextBundleMethod(activityName, activityClass));
-        generatedClass.addMethod(getContextBundleFinishMethod(activityName, activityClass));
-        generatedClass.addMethod(getContextStringExtraMethod(activityName, activityClass));
-        generatedClass.addMethod(getContextStringExtraFinishMethod(activityName, activityClass));
-        generatedClass.addMethod(getContextSerializableExtraMethod(activityName, activityClass));
-        generatedClass.addMethod(getContextSerializableExtraFinishMethod(activityName, activityClass));
-        generatedClass.addMethod(getContextParcelableExtraMethod(activityName, activityClass));
-        generatedClass.addMethod(getContextParcelableExtraFinishMethod(activityName, activityClass));
-
-
+        // return generated class
         return generatedClass;
     }
 
-    private MethodSpec getContextMethod(String activityName, ClassName activityClass) {
+    // simple route method that gets context and route to activity that annotation was used
+    private MethodSpec getContextMethod(ClassName activityClass) {
         return MethodSpec
-                .methodBuilder(METHOD_PREFIX + activityName)
+                .methodBuilder(METHOD_PREFIX)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addParameter(classContext, "context")
                 .addStatement("$L.startActivity( new $T($L, $L))", "context", classIntent, "context", activityClass + ".class")
                 .build();
     }
 
-
-    private MethodSpec getContextFinishMethod(String activityName, ClassName activityClass) {
+    // simple route method that gets context and route to activity that annotation was used.
+    // also provides "finishCurrent" flag if true will finish current (caller) activity
+    private MethodSpec getContextFinishMethod(ClassName activityClass) {
         return MethodSpec
-                .methodBuilder(METHOD_PREFIX + activityName)
+                .methodBuilder(METHOD_PREFIX)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addParameter(classContext, "context")
                 .addParameter(boolean.class, "finishCurrent")
@@ -139,9 +156,10 @@ public class RouteProcessor extends AbstractProcessor {
                 .build();
     }
 
-    private MethodSpec getContextBundleMethod(String activityName, ClassName activityClass) {
+    // route method with context and also a bundle that will be passed in the intent
+    private MethodSpec getContextBundleMethod(ClassName activityClass) {
         return MethodSpec
-                .methodBuilder(METHOD_PREFIX + activityName)
+                .methodBuilder(METHOD_PREFIX)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addParameter(classContext, "context")
                 .addParameter(classBundle, "bundle")
@@ -151,10 +169,11 @@ public class RouteProcessor extends AbstractProcessor {
                 .build();
     }
 
-
-    private MethodSpec getContextBundleFinishMethod(String activityName, ClassName activityClass) {
+    // route method with context and also a bundle that will be passed in the intent
+    // also provides "finishCurrent" flag if true will finish current (caller) activity
+    private MethodSpec getContextBundleFinishMethod(ClassName activityClass) {
         return MethodSpec
-                .methodBuilder(METHOD_PREFIX + activityName)
+                .methodBuilder(METHOD_PREFIX)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addParameter(classContext, "context")
                 .addParameter(classBundle, "bundle")
@@ -168,10 +187,10 @@ public class RouteProcessor extends AbstractProcessor {
                 .build();
     }
 
-
-    private MethodSpec getContextStringExtraMethod(String activityName, ClassName activityClass) {
+    // route method with context and also a String extra that will be passed in the intent
+    private MethodSpec getContextStringExtraMethod(ClassName activityClass) {
         return MethodSpec
-                .methodBuilder(METHOD_PREFIX + activityName)
+                .methodBuilder(METHOD_PREFIX)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addParameter(classContext, "context")
                 .addParameter(String.class, "key")
@@ -182,9 +201,11 @@ public class RouteProcessor extends AbstractProcessor {
                 .build();
     }
 
-    private MethodSpec getContextStringExtraFinishMethod(String activityName, ClassName activityClass) {
+    // route method with context and also a String extra that will be passed in the intent
+    // also provides "finishCurrent" flag if true will finish current (caller) activity
+    private MethodSpec getContextStringExtraFinishMethod(ClassName activityClass) {
         return MethodSpec
-                .methodBuilder(METHOD_PREFIX + activityName)
+                .methodBuilder(METHOD_PREFIX)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addParameter(classContext, "context")
                 .addParameter(String.class, "key")
@@ -199,10 +220,10 @@ public class RouteProcessor extends AbstractProcessor {
                 .build();
     }
 
-
-    private MethodSpec getContextSerializableExtraMethod(String activityName, ClassName activityClass) {
+    // route method with context and also a Serializable extra that will be passed in the intent
+    private MethodSpec getContextSerializableExtraMethod(ClassName activityClass) {
         return MethodSpec
-                .methodBuilder(METHOD_PREFIX + activityName)
+                .methodBuilder(METHOD_PREFIX)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addParameter(classContext, "context")
                 .addParameter(String.class, "key")
@@ -213,10 +234,11 @@ public class RouteProcessor extends AbstractProcessor {
                 .build();
     }
 
-
-    private MethodSpec getContextSerializableExtraFinishMethod(String activityName, ClassName activityClass) {
+    // route method with context and also a Serializable extra that will be passed in the intent
+    // also provides "finishCurrent" flag if true will finish current (caller) activity
+    private MethodSpec getContextSerializableExtraFinishMethod(ClassName activityClass) {
         return MethodSpec
-                .methodBuilder(METHOD_PREFIX + activityName)
+                .methodBuilder(METHOD_PREFIX)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addParameter(classContext, "context")
                 .addParameter(String.class, "key")
@@ -231,9 +253,10 @@ public class RouteProcessor extends AbstractProcessor {
                 .build();
     }
 
-    private MethodSpec getContextParcelableExtraMethod(String activityName, ClassName activityClass) {
+    // route method with context and also a Parcelable extra that will be passed in the intent
+    private MethodSpec getContextParcelableExtraMethod(ClassName activityClass) {
         return MethodSpec
-                .methodBuilder(METHOD_PREFIX + activityName)
+                .methodBuilder(METHOD_PREFIX)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addParameter(classContext, "context")
                 .addParameter(String.class, "key")
@@ -245,9 +268,11 @@ public class RouteProcessor extends AbstractProcessor {
     }
 
 
-    private MethodSpec getContextParcelableExtraFinishMethod(String activityName, ClassName activityClass) {
+    // route method with context and also a Parcelable extra that will be passed in the intent
+    // also provides "finishCurrent" flag if true will finish current (caller) activity
+    private MethodSpec getContextParcelableExtraFinishMethod(ClassName activityClass) {
         return MethodSpec
-                .methodBuilder(METHOD_PREFIX + activityName)
+                .methodBuilder(METHOD_PREFIX)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addParameter(classContext, "context")
                 .addParameter(String.class, "key")
