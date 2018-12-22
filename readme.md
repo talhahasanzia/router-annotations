@@ -63,12 +63,15 @@ public class SecondActivity extends AppCompatActivity
 ```
    // route to second activity
    SecondActivityRouter.route(MainActivity.this);
+   
    // route to second activity, and finish this current one
    SecondActivityRouter.route(MainActivity.this, true);
+   
    // route with some serialized data
    SecondActivityRouter.route(MainActivity.this, "myData", (Serializable) extraData);
+   
    // route with some parcelable data
-    SecondActivityRouter.route(MainActivity.this, "myData", myParcelable);
+   SecondActivityRouter.route(MainActivity.this, "myData", myParcelable);
   
 ```
 
