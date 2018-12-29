@@ -1,4 +1,4 @@
-package com.talhahasanzia.router.annotations;
+package com.talhahasanzia.sample.app;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

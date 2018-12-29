@@ -7,4 +7,7 @@
     <string name="test_route_with_parcelable_extra">Test Route With Parcelable Extra</string>
     <string name="should_finish_current_activity">Should finish current activity?</string>
     <string name="sample_data_to_be_passed_in_second_activity">Sample data to be passed in second Activity</string>
+    <string name="modified_intent">Modified Intent</string>
+    <string name="start_for_result">Start for Result</string>
+    <string name="result_message">Started activity for result!</string>
 </resources>

@@ -1,6 +1,8 @@
-package com.talhahasanzia.router.annotations;
+package com.talhahasanzia.sample.app;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.view.View;
@@ -8,7 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.talhahasanzia.annotation.Routeable;
-import com.talhahasanzia.router.annotations.model.MyParcelable;
+import com.talhahasanzia.sample.app.model.MyParcelable;
 
 import java.io.Serializable;
 
@@ -73,9 +75,39 @@ public class MainActivity extends AppCompatActivity {
                     SecondActivityRouter.route(MainActivity.this, "myData", myParcelable);
                 }
                 break;
+            case R.id.modifiedRoute:
+                // modify intent example
+                SecondActivityRouter.route(this, intent -> {
+                    // incoming intent
+                    // modify it
+                    intent.putExtra("dummyFloat", 3.142799F);
+                    // return it.
+                    return intent;  // now the router will have your customized intent and will
+                });
+                break;
+
+            case R.id.resultRoute:
+                // startActivityForResult example
+                // adding flag to make SecondActivity know this was started for Result
+                // this is not needed to modify intent here, it is just for illustration purposes
+                SecondActivityRouter.routeForResult(this, 399, intent -> {
+                    intent.putExtra("isForResult", true);
+                    return intent;
+                });
+                break;
         }
 
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 399) {
+                Toast.makeText(this, "Result received!", Toast.LENGTH_SHORT).show();
+            }
+
+        }
     }
 
     @Override
@@ -83,4 +115,6 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "Finished", Toast.LENGTH_SHORT).show();
         super.onDestroy();
     }
+
+
 }
