@@ -1,5 +1,5 @@
 
-# Router Annotations  [![Release](https://jitpack.io/v/talhahasanzia/router-annotations.svg)](https://jitpack.io/#talhahasanzia/router-annotations/0.1)  [![GitHub issues](https://img.shields.io/github/issues/talhahasanzia/router-annotations.svg)](https://github.com/talhahasanzia/router-annotations/issues)   [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+# Router Annotations  [![Release](https://jitpack.io/v/talhahasanzia/router-annotations.svg)](https://jitpack.io/#talhahasanzia/router-annotations/0.2)  [![GitHub issues](https://img.shields.io/github/issues/talhahasanzia/router-annotations.svg)](https://github.com/talhahasanzia/router-annotations/issues)   [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 *Dont Repeat Yourself!*
 
 
@@ -13,18 +13,13 @@ A simple annotation that generates a "Router" class for providing a consistent w
 - No need to write startActivity again and again.
 - Consistent suffix 'Router' like MainActivity -> MainActivityRouter to identify it quickly.
 - Just call route methods to navigate to acitivty with several options like - will current activity finish, intent extras etc.
+- Call routeForResult() methods to start Activity for result.
+- Fully customizable intents now supported (since v0.2+)! Pass IntentModifier object in overloaded methods customize intent object that library is using.
 
-
-### Disadvantages
-- Less extensibility and flexible.
-- Non-SOLID compliance.
-- Static methods, hard to test.
-- Only String, Serializable and Parcelable support in Intent extras. (its very easy to add support for other types, [see this class](https://github.com/talhahasanzia/router-annotations/blob/master/processor/src/main/java/com/talhahasanzia/processor/RouteProcessor.java))
-- Increases method count in dex due to each class having its separate methods generated.
 
 
 ## Release
-Available Version:  [0.1](https://github.com/talhahasanzia/router-annotations/releases/tag/0.1) on [jitpack.io](https://jitpack.io/#talhahasanzia/router-annotations/0.1) 
+Available Version:  [0.2](https://github.com/talhahasanzia/router-annotations/releases/tag/0.2) on [jitpack.io](https://jitpack.io/#talhahasanzia/router-annotations/0.2)
 
 
 ## Library Source
@@ -41,11 +36,11 @@ In your project level gradle, add:
 
 In your app level gradle **(4.0+)**, add:
 ```
-    implementation 'com.github.talhahasanzia:router-annotations:0.1'
+    implementation 'com.github.talhahasanzia:router-annotations:0.2'
 ```
 for gradle versions **below 4.0** use:
 ```
-    compile 'com.github.talhahasanzia:router-annotations:0.1'
+    compile 'com.github.talhahasanzia:router-annotations:0.2'
 ```
 ## Using in your project
 - Consider you have MainActivity, and you want to navigate to SecondAcitivity, first add @Routeable annotation to SecondAcitvity simply like:
@@ -72,6 +67,15 @@ public class SecondActivity extends AppCompatActivity
    
    // route with some parcelable data
    SecondActivityRouter.route(MainActivity.this, "myData", myParcelable);
+
+   // modify intent example
+   SecondActivityRouter.route(this, intent -> {
+       // incoming intent
+       // modify it
+       intent.putExtra("dummyFloat", 3.142799F);
+       // return it.
+       return intent;  // now the router will have your customized intent and will use this object in further calls
+   });
   
 ```
 
@@ -82,7 +86,7 @@ public class SecondActivity extends AppCompatActivity
 ## Contributing
 
 - Contributions are welcomed as long as they dont break the code. Please create an issue and have a discussion before pull request.
-- There is still WIP so dont hesitate to report issues or pull requests.
+- There is still WIP so don't hesitate to report issues or pull requests.
 - Also, if you created a skin based on this library you can create a pull request and we will add it in official release.
 
 
