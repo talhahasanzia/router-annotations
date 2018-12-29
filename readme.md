@@ -14,7 +14,8 @@ A simple annotation that generates a "Router" class for providing a consistent w
 - Consistent suffix 'Router' like MainActivity -> MainActivityRouter to identify it quickly.
 - Just call route methods to navigate to acitivty with several options like - will current activity finish, intent extras etc.
 - Call routeForResult() methods to start Activity for result.
-- Fully customizable intents now supported (since v0.2+)! Pass IntentModifier object in overloaded methods customize intent object that library is using.
+- Fully customizable intents now supported (since v0.2+).
+- Pass IntentModifier object in overloaded methods customize intent object that library is using. You need to build project so IntentModifier is available since it is also generated.
 
 
 
