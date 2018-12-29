@@ -1,4 +1,4 @@
-package com.talhahasanzia.router.annotations;
+package com.talhahasanzia.sample.app;
 
 import org.junit.Test;
 

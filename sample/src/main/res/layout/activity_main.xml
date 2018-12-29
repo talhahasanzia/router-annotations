@@ -50,6 +50,23 @@
         android:onClick="onClick"
         android:text="@string/test_route_with_parcelable_extra" />
 
+    <Button
+        android:id="@+id/resultRoute"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:onClick="onClick"
+        android:text="@string/start_for_result" />
+
+
+    <Button
+        android:id="@+id/modifiedRoute"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:onClick="onClick"
+        android:text="@string/modified_intent" />
+
 
     <android.support.v7.widget.AppCompatCheckBox
         android:id="@+id/finishCheckBox"

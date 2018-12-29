@@ -1,4 +1,4 @@
-package com.talhahasanzia.router.annotations.model;
+package com.talhahasanzia.sample.app.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
