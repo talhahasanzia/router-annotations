@@ -82,6 +82,15 @@ public class SecondActivity extends AppCompatActivity
 
 - Feel free to report issues and contribute.
   
+## Chagne Log
+
+**0.1**
+
+Basic routing methods with Intent Extras support.
+
+**0.2**
+
+routeForResult (startActivityForResult) and Intent customization using IntentModifier features added.
 
 
 ## Contributing
