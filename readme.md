@@ -82,7 +82,7 @@ public class SecondActivity extends AppCompatActivity
 
 - Feel free to report issues and contribute.
   
-## Chagne Log
+## Change Log
 
 **0.1**
 
